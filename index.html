@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#efe7d2">
+  <meta name="description" content="孩子的书法单字视频课：点一个字，看一段讲解，记一句口诀。">
+  <title>一字一课 · 少儿书法</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="seal" aria-hidden="true">习<br>字</div>
+    <div>
+      <p class="eyebrow">少儿书法 · 一字一课</p>
+      <h1>点一个字，<br><em>看懂再下笔</em></h1>
+      <p class="intro">每个字都有自己的讲解视频和书写口诀。每天学一字，慢慢写出好字。</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="toolbar" aria-label="课程筛选">
+      <label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="找一找：人、天、悬针竖……" autocomplete="off"></label>
+      <div class="filters" role="group" aria-label="课程分类">
+        <button class="filter active" data-filter="all">全部</button>
+        <button class="filter" data-filter="character">汉字</button>
+        <button class="filter" data-filter="stroke">基础笔画</button>
+      </div>
+    </section>
+
+    <section class="progress-card" aria-label="学习提示">
+      <span class="brush-dot"></span>
+      <div><strong>今日练字小任务</strong><p>看 1 遍视频，描 3 遍，再独立写 3 遍。</p></div>
+    </section>
+
+    <section>
+      <div class="section-heading"><h2 id="course-title">全部课程</h2><span id="course-count"></span></div>
+      <div class="grid" id="course-grid"></div>
+      <p class="empty" id="empty" hidden>没有找到这个字，换一个试试吧。</p>
+    </section>
+  </main>
+
+  <footer>横平竖直写好字，一撇一捺学做人。</footer>
+
+  <div class="modal" id="lesson-modal" aria-hidden="true">
+    <div class="backdrop" data-close></div>
+    <article class="lesson" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
+      <button class="close" data-close aria-label="关闭">×</button>
+      <div class="lesson-top"><span class="lesson-type" id="lesson-type"></span><span class="lesson-number" id="lesson-number"></span></div>
+      <div class="lesson-title-row"><div class="big-character" id="big-character"></div><div><p class="watch">先看老师怎么写</p><h2 id="lesson-title"></h2></div></div>
+      <video id="lesson-video" controls playsinline webkit-playsinline preload="metadata" controlslist="nodownload" poster="">
+        您的浏览器暂不支持视频播放。
+      </video>
+      <div class="tips"><h3>记住这几点</h3><ul id="lesson-tips"></ul></div>
+      <blockquote id="lesson-rhyme"></blockquote>
+      <button class="done" data-close>我记住了，去练一练</button>
+    </article>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
