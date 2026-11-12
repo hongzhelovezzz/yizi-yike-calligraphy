@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#efe7d2">
+  <title>课程管理 · 一字一课</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <a href="index.html" class="back-link">← 返回课程</a>
+    <div><p>一字一课</p><h1>课程管理</h1></div>
+  </header>
+
+  <main class="admin-main">
+    <section id="setup-panel" class="panel" hidden>
+      <span class="status-dot"></span>
+      <h2>还差一步连接在线存储</h2>
+      <p>连接后，你就能在这里永久新增、修改、删除课程和替换视频。</p>
+    </section>
+
+    <section id="login-panel" class="panel login-panel" hidden>
+      <p class="eyebrow">仅管理员可进入</p>
+      <h2>登录管理后台</h2>
+      <form id="login-form">
+        <label>管理员邮箱<input id="login-email" type="email" autocomplete="username" required></label>
+        <label>管理密码<input id="login-password" type="password" autocomplete="current-password" required></label>
+        <p class="form-message" id="login-message" role="alert"></p>
+        <button class="primary" type="submit">登录</button>
+      </form>
+    </section>
+
+    <section id="dashboard" hidden>
+      <div class="dashboard-top">
+        <div><p class="eyebrow">内容后台</p><h2>课程列表 <span id="admin-count"></span></h2></div>
+        <div class="top-actions"><button id="logout" class="quiet">退出</button><button id="add-course" class="primary">＋ 添加课程</button></div>
+      </div>
+      <div class="notice">上传视频后会自动保存，孩子重新打开网页即可看到。免费版单个视频需小于 50MB。</div>
+      <div id="admin-list" class="admin-list"></div>
+      <p id="admin-empty" class="empty" hidden>还没有课程，点击“添加课程”开始。</p>
+    </section>
+  </main>
+
+  <div id="editor" class="editor" aria-hidden="true">
+    <div class="editor-backdrop" data-editor-close></div>
+    <section class="editor-card" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+      <button class="editor-close" data-editor-close aria-label="关闭">×</button>
+      <h2 id="editor-title">添加课程</h2>
+      <form id="course-form">
+        <input id="course-id" type="hidden">
+        <input id="old-video-path" type="hidden">
+        <div class="two-cols">
+          <label>字或笔画名称<input id="course-name" maxlength="12" placeholder="例如：永、横折钩" required></label>
+          <label>课程类型<select id="course-type"><option value="character">汉字</option><option value="stroke">基础笔画</option></select></label>
+        </div>
+        <label>书写口诀<input id="course-rhyme" maxlength="80" placeholder="例如：点正横稳，竖直钩轻。" required></label>
+        <label>书写重点（每行一条）<textarea id="course-tips" rows="5" placeholder="第一条重点&#10;第二条重点&#10;第三条重点" required></textarea></label>
+        <label>讲解视频<input id="course-video" type="file" accept="video/mp4,video/quicktime,video/webm,video/*"><small id="video-help">新增课程必须选择视频；编辑课程时不选则保留原视频。</small></label>
+        <label>显示顺序<input id="course-order" type="number" min="1" step="1" value="1" required></label>
+        <div id="upload-progress" class="upload-progress" hidden><span></span><p>正在上传视频，请不要关闭页面……</p></div>
+        <p id="editor-message" class="form-message" role="alert"></p>
+        <button id="save-course" class="primary wide" type="submit">保存课程</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

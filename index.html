@@ -7,6 +7,7 @@
   <meta name="description" content="孩子的书法单字视频课：点一个字，看一段讲解，记一句口诀。">
   <title>一字一课 · 少儿书法</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="site-additions.css">
 </head>
 <body class="locked">
   <section class="access-gate" id="access-gate" aria-labelledby="gate-title">
@@ -54,7 +55,10 @@
     </section>
   </main>
 
-  <footer>横平竖直写好字，一撇一捺学做人。</footer>
+  <footer>
+    <p>横平竖直写好字，一撇一捺学做人。</p>
+    <a class="admin-link" href="admin.html">课程管理</a>
+  </footer>
 
   <div class="modal" id="lesson-modal" aria-hidden="true">
     <div class="backdrop" data-close></div>
@@ -70,6 +74,8 @@
       <button class="done" data-close>我记住了，去练一练</button>
     </article>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

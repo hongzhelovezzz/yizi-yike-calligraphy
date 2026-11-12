@@ -5,7 +5,7 @@ function unlock(){document.body.classList.remove('locked');sessionStorage.setIte
 if(sessionStorage.getItem('calligraphy-access')==='ok')unlock();else setTimeout(()=>codeInput.focus(),100);
 gate.addEventListener('submit',async e=>{e.preventDefault();gateError.textContent='正在验证…';if(await hashCode(codeInput.value.trim())===ACCESS_HASH){gateError.textContent='';unlock()}else{gateError.textContent='访问码不正确，请重新输入。';codeInput.select()}});
 
-const courses = [
+const fallbackCourses = [
   {id:'xia',title:'下',type:'character',video:'videos/xia.mp4',tips:['横画舒展，托住上面。','竖从横画中间起笔。','最后一点由轻到重。'],rhyme:'长横托稳，竖正点沉。'},
   {id:'dou',title:'斗',type:'character',video:'videos/dou.mp4',tips:['两点一高一低，不要排齐。','横画稍向右上倾。','中竖写直，稳住重心。'],rhyme:'两点错落，横斜竖直。'},
   {id:'xiao',title:'小',type:'character',video:'videos/xiao.mp4',tips:['竖钩写在正中间。','左点稍低，右点稍高。','左右两点彼此呼应。'],rhyme:'竖钩居中，两点呼应。'},
@@ -51,9 +51,22 @@ const courses = [
   {id:'xiepie',title:'斜撇',type:'stroke',video:'videos/xiepie.mp4',tips:['起笔稍顿，先稳住笔锋。','向左下行笔，弧度自然。','由重到轻，末端出锋。'],rhyme:'起笔稳，向左行，渐轻出锋。'}
 ];
 
+let courses=[...fallbackCourses];
+const backendConfig=window.CALLIGRAPHY_CONFIG||{};
+const backendReady=Boolean(backendConfig.supabaseUrl&&backendConfig.supabaseAnonKey&&window.supabase);
+const backend=backendReady?window.supabase.createClient(backendConfig.supabaseUrl,backendConfig.supabaseAnonKey):null;
+
 const grid=document.querySelector('#course-grid'),search=document.querySelector('#search'),count=document.querySelector('#course-count'),empty=document.querySelector('#empty'),modal=document.querySelector('#lesson-modal'),video=document.querySelector('#lesson-video');
 let activeFilter='all';
 function render(){const q=search.value.trim();const list=courses.filter(c=>(activeFilter==='all'||c.type===activeFilter)&&(!q||c.title.includes(q)||c.tips.join('').includes(q)));grid.innerHTML=list.map(c=>`<button class="card ${c.type==='stroke'?'stroke-card':''}" data-id="${c.id}"><div class="card-head"><span class="character">${c.title}</span><span class="play" aria-hidden="true">▶</span></div><h3>${c.type==='stroke'?'基础笔画':'单字课'} · ${c.title}</h3><p>${c.rhyme}</p></button>`).join('');count.textContent=`${list.length} 节`;empty.hidden=list.length>0;}
 function openLesson(id){const c=courses.find(x=>x.id===id),index=courses.indexOf(c)+1;document.querySelector('#lesson-type').textContent=c.type==='stroke'?'基础笔画课':'单字讲解';document.querySelector('#lesson-number').textContent=`第 ${index} 课`;document.querySelector('#big-character').textContent=c.title;document.querySelector('#lesson-title').textContent=`${c.title} · 书写讲解`;document.querySelector('#lesson-tips').innerHTML=c.tips.map(t=>`<li>${t}</li>`).join('');document.querySelector('#lesson-rhyme').textContent=`口诀：${c.rhyme}`;video.src=c.video;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';setTimeout(()=>video.play().catch(()=>{}),150);}
 function closeLesson(){video.pause();video.removeAttribute('src');video.load();modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
-grid.addEventListener('click',e=>{const card=e.target.closest('[data-id]');if(card)openLesson(card.dataset.id)});document.querySelectorAll('[data-close]').forEach(x=>x.addEventListener('click',closeLesson));document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');activeFilter=btn.dataset.filter;document.querySelector('#course-title').textContent=activeFilter==='all'?'全部课程':activeFilter==='character'?'汉字课程':'基础笔画';render()}));search.addEventListener('input',render);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeLesson()});render();
+grid.addEventListener('click',e=>{const card=e.target.closest('[data-id]');if(card)openLesson(card.dataset.id)});document.querySelectorAll('[data-close]').forEach(x=>x.addEventListener('click',closeLesson));document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelector('.filter.active').classList.remove('active');btn.classList.add('active');activeFilter=btn.dataset.filter;document.querySelector('#course-title').textContent=activeFilter==='all'?'全部课程':activeFilter==='character'?'汉字课程':'基础笔画';render()}));search.addEventListener('input',render);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('open'))closeLesson()});
+async function loadCourses(){
+  if(!backendReady){render();return}
+  const {data,error}=await backend.from('courses').select('id,title,type,video_url,tips,rhyme,sort_order').order('sort_order',{ascending:true});
+  if(error||!data?.length){render();return}
+  courses=data.map(c=>({id:c.id,title:c.title,type:c.type,video:c.video_url,tips:c.tips||[],rhyme:c.rhyme||''}));
+  render();
+}
+loadCourses();
