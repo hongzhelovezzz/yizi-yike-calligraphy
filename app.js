@@ -1,3 +1,10 @@
+const ACCESS_HASH='1e7da6746f9ed55f22ccb7e56a7cfbba9a0f4095d3fabb85a827a7f69539a06c';
+const gate=document.querySelector('#gate-form'),codeInput=document.querySelector('#access-code'),gateError=document.querySelector('#gate-error');
+async function hashCode(value){const bytes=new TextEncoder().encode(value);const hash=await crypto.subtle.digest('SHA-256',bytes);return [...new Uint8Array(hash)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function unlock(){document.body.classList.remove('locked');sessionStorage.setItem('calligraphy-access','ok')}
+if(sessionStorage.getItem('calligraphy-access')==='ok')unlock();else setTimeout(()=>codeInput.focus(),100);
+gate.addEventListener('submit',async e=>{e.preventDefault();gateError.textContent='正在验证…';if(await hashCode(codeInput.value.trim())===ACCESS_HASH){gateError.textContent='';unlock()}else{gateError.textContent='访问码不正确，请重新输入。';codeInput.select()}});
+
 const courses = [
   {id:'xia',title:'下',type:'character',video:'videos/xia.mp4',tips:['横画舒展，托住上面。','竖从横画中间起笔。','最后一点由轻到重。'],rhyme:'长横托稳，竖正点沉。'},
   {id:'dou',title:'斗',type:'character',video:'videos/dou.mp4',tips:['两点一高一低，不要排齐。','横画稍向右上倾。','中竖写直，稳住重心。'],rhyme:'两点错落，横斜竖直。'},
