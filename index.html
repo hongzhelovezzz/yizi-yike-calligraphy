@@ -8,7 +8,21 @@
   <title>一字一课 · 少儿书法</title>
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="locked">
+  <section class="access-gate" id="access-gate" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <div class="gate-seal" aria-hidden="true">启</div>
+      <p class="eyebrow">一字一课 · 访问验证</p>
+      <h1 id="gate-title">请输入访问码</h1>
+      <p>访问码由课程分享者提供，验证后即可开始学习。</p>
+      <form id="gate-form">
+        <label for="access-code">6 位访问码</label>
+        <input id="access-code" type="tel" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" placeholder="请输入 6 位数字" required>
+        <p class="gate-error" id="gate-error" role="alert"></p>
+        <button type="submit">进入课程</button>
+      </form>
+    </div>
+  </section>
   <header class="hero">
     <div class="seal" aria-hidden="true">习<br>字</div>
     <div>
